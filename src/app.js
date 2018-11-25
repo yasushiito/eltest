@@ -22,21 +22,27 @@ ipcRenderer.on('make-import', (event, config) => {
   var import_api_id = $('#config-import-api-id');
   import_api_id.val(config.import_api_id);
 });
-var imp = document.getElementById('submit-import');
-imp.addEventListener('click', (e) => {
+ipcRenderer.on('make-dictionary', (event, config) => {
+  $('#dictionary').val(config.dictionary);
+});
+document.getElementById('submit-import').addEventListener('click', (e) => {
   ipcRenderer.send('import');
 });
-var tw = document.getElementById('submit-tweet');
-tw.addEventListener('click', (e) => {
+document.getElementById('submit-tweet').addEventListener('click', (e) => {
   var msg = $('#message');
   var form = {
     message: msg.val()
   };
   ipcRenderer.send('tweet', form);
 });
+// 音声入力ドキュメントに書かれたテキストをインポートできたらメッセージ送信される 
 ipcRenderer.on('update-message', (event, message) => {
   let msg = $('#message');
   msg.val(message);
+  var form = {
+    message: message
+  };
+  event.sender.send('tweet', form)
 });
 var btn = document.getElementById('submit-config');
 btn.addEventListener('click', (e) => {
@@ -59,4 +65,11 @@ btn.addEventListener('click', (e) => {
     import_api_id: import_api_id.val()
   };
   ipcRenderer.send('submit-doc', params);
+});
+document.getElementById('submit-dictionary').addEventListener('click', (e) => {
+  var dic = $('#dictionary');
+  var form = {
+    dictionary: dic.val()
+  };
+  ipcRenderer.send('submit-dic', form);
 });

@@ -1,12 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 const electron = require('electron');
+const ElectronStore = require('electron-store');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const ipcMain = require('electron').ipcMain;
-var Twitter = require('twitter');
-var Client = require('node-rest-client').Client;
-const ElectronStore = require('electron-store');
+import Tweet from './main/tweet';
+import Dictionary from './main/dictionary';
+
+require('./import_doc');
 
 let mainWindow = null;
 
@@ -33,22 +35,10 @@ ipcMain.on('req', (event, arg) => {
       import_api_id: config.get('import_api_id')
     };
     event.sender.send('make-import', params);
-  });
-});
-ipcMain.on('import', (event) => {
-  var params = {
-    data: {
-      id: 'yas'
-    },
-    headers: {
-      Content_Type: 'application/json'
-    }
-  };
-  var client = new Client();
-  let importApiId = config.get('import_api_id');
-  let url = 'https://script.google.com/macros/s/' + importApiId + '/exec';
-  client.post(url, params, function(data, response) {
-    event.sender.send('update-message', data.content);
+    var params = {
+      dictionary: config.get('dictionary')
+    };
+    event.sender.send('make-dictionary', params);
   });
 });
 ipcMain.on('tweet', (event, form) => {
@@ -58,15 +48,14 @@ ipcMain.on('tweet', (event, form) => {
     access_token_key: config.get('access_token_key'),
     access_token_secret: config.get('access_token_secret')
   };
-  console.dir(auth);
-  var client = new Twitter(auth);
-  var params = {status: form.message};
-  client.post('statuses/update', params, function(error, tweet, response) {
-    if (error) {
-    // console.log(error);
-      //console.log(response);
-    }
-  });
+  var tweet = new Tweet(auth);
+  var dictionary = new Dictionary([['ハローワールド', 'Hello, world!']]);
+  let lines = form.message.split("\n");
+  var msgs = tweet.simple(lines, dictionary);
+  for(let i = 0;i < msgs.length;i++){
+    tweet.post(msgs[i]);
+   
+  }
 });
 ipcMain.on('submit', (event, params) => {
   config.set('consumer_key', params.consumer_key);
@@ -77,11 +66,14 @@ ipcMain.on('submit', (event, params) => {
 ipcMain.on('submit-doc', (event, params) => {
   config.set('import_api_id', params.import_api_id);
 });
+ipcMain.on('submit-dic', (event, params) => {
+  config.set('dictionary', params.dictionary);
+});
 app.on('ready', function() {
   // ブラウザ(Chromium)の起動, 初期画面のロード
-  mainWindow = new BrowserWindow({x: 0, y: 0, width: 800, height: 600, alwaysOnTop: true});
+  mainWindow = new BrowserWindow({x: 0, y: 250, width: 200, height: 650, alwaysOnTop: true});
   mainWindow.loadFile('index.html');
-  mainWindow.toggleDevTools();
+  // mainWindow.toggleDevTools();
   
   mainWindow.on('closed', function() {
     mainWindow = null;
