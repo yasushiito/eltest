@@ -5,6 +5,9 @@ const ElectronStore = require('electron-store');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const ipcMain = require('electron').ipcMain;
+const {clipboard} = require('electron');
+const { exec } = require('child_process');
+import {ipcRenderer} from 'electron';
 import Tweet from './main/tweet';
 import Dictionary from './main/dictionary';
 
@@ -13,6 +16,9 @@ require('./import_doc');
 let mainWindow = null;
 
 var config = new ElectronStore({defaults: {}});
+var dir_home = process.env[process.platform == "win32" ? "USERPROFILE" : "HOME"];
+var dir_script = require("path").join(dir_home, '\\Documents\\autohotkey');
+var ahkexe = '"c:\\Program Files\\AutoHotkey\\AutoHotkey.exe"'
 app.on('window-all-closed', function() {
   if (process.platform !== 'darwin') {
     app.quit();
@@ -41,6 +47,49 @@ ipcMain.on('req', (event, arg) => {
     event.sender.send('make-dictionary', params);
   });
 });
+var executeAhk = (filename) => {
+  var script = '"' + dir_script + '\\' + filename + '"'
+  var cmd = ahkexe + ' ' + script
+  exec(cmd, (err, stdout, stderr) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log(stdout);
+  });
+}
+// はてなブログの新規エントリーを用意する。
+ipcMain.on('blogentry', (event) => {
+  executeAhk('call_winins.ahk');
+});
+// ;作業用ウィンドウで開いているページを編集中のブログにリンク挿入する。
+ipcMain.on('blogrefemb', (event) => {
+  executeAhk('call_wineql.ahk');
+});
+// 作業用ウィンドウで開いているページを編集中のブログに選択文字列でリンク挿入する 。
+ipcMain.on('blogrefsel', (event) => {
+  executeAhk('call_winsfteql.ahk');
+});
+// Google Chrome に表示されているページをはてブする 。
+ipcMain.on('hatebucrm', (event) => {
+  executeAhk('call_win2.ahk');
+});
+// Firefox で表示しているページをはてブする 。
+ipcMain.on('hatebufox', (event) => {
+  executeAhk('call_winsft2.ahk');
+});
+// スクリーンキーボードなどを右に配置する。
+ipcMain.on('toolright', (event) => {
+  executeAhk('call_winhome.ahk');
+});
+// スクリーンキーボードなどを左に配置する。
+ipcMain.on('toolleft', (event) => {
+  executeAhk('call_winsfthome.ahk');
+});
+//
+ipcMain.on('googlesearch', (event) => {
+  executeAhk('call_winhome.ahk');
+});
 ipcMain.on('tweet', (event, form) => {
   var auth = {
     consumer_key: config.get('consumer_key'),
@@ -49,13 +98,24 @@ ipcMain.on('tweet', (event, form) => {
     access_token_secret: config.get('access_token_secret')
   };
   var tweet = new Tweet(auth);
-  var dictionary = new Dictionary([['ハローワールド', 'Hello, world!']]);
+  var words = config.get('dictionary').split("\n");
+  var dic = words.map((value, index, array) => {return value.split("\t")});
+  var dictionary = new Dictionary(dic);
   let lines = form.message.split("\n");
   var msgs = tweet.simple(lines, dictionary);
   for(let i = 0;i < msgs.length;i++){
     tweet.post(msgs[i]);
-   
   }
+});
+// Textarea のテキストをクリップボードに転送する 。
+ipcMain.on('setclip', (event, form) => {
+  var tweet = new Tweet(null);
+  var words = config.get('dictionary').split("\n");
+  var dic = words.map((value, index, array) => {return value.split("\t")});
+  var dictionary = new Dictionary(dic);
+  let lines = form.message.split("\n");
+  var msgs = tweet.clip(lines, dictionary);
+  clipboard.writeText(msgs.join("\n"));
 });
 ipcMain.on('submit', (event, params) => {
   config.set('consumer_key', params.consumer_key);
@@ -71,12 +131,11 @@ ipcMain.on('submit-dic', (event, params) => {
 });
 app.on('ready', function() {
   // ブラウザ(Chromium)の起動, 初期画面のロード
-  mainWindow = new BrowserWindow({x: 0, y: 250, width: 200, height: 650, alwaysOnTop: true});
+  mainWindow = new BrowserWindow({x: 110, y: 250, width: 360, height: 250, alwaysOnTop: true});
   mainWindow.loadFile('index.html');
-  // mainWindow.toggleDevTools();
+  //mainWindow.toggleDevTools();
   
   mainWindow.on('closed', function() {
     mainWindow = null;
   });
 });
-

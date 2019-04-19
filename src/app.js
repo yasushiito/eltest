@@ -26,14 +26,49 @@ ipcRenderer.on('make-dictionary', (event, config) => {
   $('#dictionary').val(config.dictionary);
 });
 document.getElementById('submit-import').addEventListener('click', (e) => {
-  ipcRenderer.send('import');
+  ipcRenderer.send('import', 'update-message');
 });
-document.getElementById('submit-tweet').addEventListener('click', (e) => {
-  var msg = $('#message');
-  var form = {
-    message: msg.val()
-  };
-  ipcRenderer.send('tweet', form);
+document.getElementById('submit-toclip').addEventListener('click', (e) => {
+  ipcRenderer.send('import', 'toclip');
+});
+//
+document.getElementById('simple-tweet').addEventListener('click', (e) => {
+  ipcRenderer.send('import', 'update-message');
+});
+document.getElementById('clipboard').addEventListener('click', (e) => {
+  ipcRenderer.send('import', 'toclip');
+});
+// はてなブログの新規エントリーを用意する。
+document.getElementById('blogentry').addEventListener('click', (e) => {
+  ipcRenderer.send('blogentry');
+});
+// ;作業用ウィンドウで開いているページを編集中のブログにリンク挿入する。
+document.getElementById('blogrefemb').addEventListener('click', (e) => {
+  ipcRenderer.send('blogrefemb');
+});
+// 作業用ウィンドウで開いているページを編集中のブログに選択文字列でリンク挿入する 。
+document.getElementById('blogrefsel').addEventListener('click', (e) => {
+  ipcRenderer.send('blogrefsel');
+});
+// Google Chrome に表示されているページをはてブする 。
+document.getElementById('hatebucrm').addEventListener('click', (e) => {
+  ipcRenderer.send('hatebucrm');
+});
+// Firefox で表示しているページをはてブする 。
+document.getElementById('hatebufox').addEventListener('click', (e) => {
+  ipcRenderer.send('hatebufox');
+});
+// スクリーンキーボードなどを右に配置する。
+document.getElementById('toolright').addEventListener('click', (e) => {
+  ipcRenderer.send('toolright');
+});
+// スクリーンキーボードなどを左に配置する。
+document.getElementById('toolleft').addEventListener('click', (e) => {
+  ipcRenderer.send('toolleft');
+});
+//
+document.getElementById('googlesearch').addEventListener('click', (e) => {
+  ipcRenderer.send('googlesearch');
 });
 // 音声入力ドキュメントに書かれたテキストをインポートできたらメッセージ送信される 
 ipcRenderer.on('update-message', (event, message) => {
@@ -43,6 +78,16 @@ ipcRenderer.on('update-message', (event, message) => {
     message: message
   };
   event.sender.send('tweet', form)
+});
+// 音声入力文書からのインポートが終了したら呼び出される 。
+ipcRenderer.on('toclip', (event, message) => {
+  // メッセージフォームにダウンロードされたテキストをクリップボードにうつしてもらう 。
+  let msg = $('#message');
+  msg.val(message);
+  var form = {
+    message: message
+  };
+  event.sender.send('setclip', form)
 });
 var btn = document.getElementById('submit-config');
 btn.addEventListener('click', (e) => {
@@ -72,4 +117,18 @@ document.getElementById('submit-dictionary').addEventListener('click', (e) => {
     dictionary: dic.val()
   };
   ipcRenderer.send('submit-dic', form);
+});
+$(document).keydown(function(e){
+  if (event.ctrlKey) {
+    if (e.keyCode === 68) {
+      document.getElementById('clipboard').click();
+    }
+  }
+});
+$(document).keydown(function(e){
+  if (event.ctrlKey) {
+    if (e.keyCode === 84) {
+      document.getElementById('simple-tweet').click();
+    }
+  }
 });

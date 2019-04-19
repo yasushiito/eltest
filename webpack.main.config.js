@@ -1,13 +1,13 @@
-const path = require('path');
-const rootPath = path.resolve(__dirname);
+//const path = require('path');
+//const rootPath = path.resolve(__dirname);
 
 const mainConfig = {
   mode: 'development',
   target: 'electron-main',
-  entry: './src/main.js',
+  entry: ['./src/main.js'],
   output: {
-    path: rootPath,
-    filename: 'main.js'
+    path:__dirname+'build/',
+    filename: 'bmain.js'
   },
   node: {
     __dirname: false,

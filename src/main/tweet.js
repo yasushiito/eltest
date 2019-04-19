@@ -11,7 +11,7 @@ export default class Tweet {
     var client = new Twitter(this.auth);
     client.post('statuses/update', params, function(error, tweet, response) {
       if (error) {
-      // console.log(error);
+      console.log(error);
         //console.log(response);
       }
     });
@@ -24,6 +24,10 @@ export default class Tweet {
     // メッセージをできるだけ140文字に収まるように結合する 
     // ツイートが極力無駄のないように結合するがハッシュタグが別のツイートに分断されることはある 
     return Messages.joinMessages(Messages.replaceByDictionary(Messages.replaceTag(Messages.addPeriod(Messages.strippedMessages(messages))), dictionary), true);
+  }
+
+  clip(messages, dictionary) {
+    return Messages.replaceByDictionary(Messages.replaceTag(Messages.addPeriod(Messages.trimedMessages(messages))), dictionary);
   }
 }
 

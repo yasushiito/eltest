@@ -14,13 +14,28 @@ module.exports = class Messages {
     return messages.map(function (value, index, array) { return Messages.strippedMessage(value)});
   }
 
+  // 受け取った文字列内の余分なスペースを取り除く 
+  static trimedMessage(message) {
+    if (Messages.hasTag(message)) {
+      return message;
+    } else {
+      return message.trim();
+    }
+  }
+
+  // 配列で受け取った文字列内の余分なスペースを取り除く 
+  // ただしハッシュタグ行の時は処理しない
+  static trimedMessages(messages) {
+    return messages.map(function (value, index, array) { return Messages.trimedMessage(value)});
+  }
+
   // 文字列に句点を加える ただしハッシュタグ行及び 末尾が!や?の時はくわえない  
   static addPeriod(messages) {
     return messages.map(function (value, index, array) { 
       if (Messages.hasTag(value)) {
         return value;
       } else {
-        return value.replace(/([^!?])$/g, "$1。");
+        return value.replace(/([^!?\]])$/g, "$1。");
       }
     });
   }

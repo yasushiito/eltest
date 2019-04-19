@@ -3,7 +3,7 @@ var Client = require('node-rest-client').Client;
 const ElectronStore = require('electron-store');
 var config = new ElectronStore({defaults: {}});
 
-ipcMain.on('import', (event) => {
+ipcMain.on('import', (event, cb) => {
   var params = {
     data: {
       id: 'yas'
@@ -16,6 +16,6 @@ ipcMain.on('import', (event) => {
   let importApiId = config.get('import_api_id');
   let url = 'https://script.google.com/macros/s/' + importApiId + '/exec';
   client.post(url, params, function(data, response) {
-    event.sender.send('update-message', data.content);
+    event.sender.send(cb, data.content);
   });
 });

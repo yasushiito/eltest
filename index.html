@@ -3,18 +3,71 @@
 <head>
 <meta charset="UTF-8">
 <title>Electron Read Us</title>
+
+<style type="text/css">
+
+    ul.panel {
+    width: 350px;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    }
+    
+    ul.panel li {
+    float: left;
+    width: 150px;
+    margin-right: 5px;
+    padding: 2px 0;
+    text-align: left;
+    }
+    
+    .clearLeft { 
+    clear: left; 
+    }
+    
+    </style>
 </head>
 <body>
 <div id="root"></div>
-<ul id="buttons">
-</ul>
-<textarea name="tweet" rows="20" id="message"></textarea>
-<button id="submit-import">
-    simple tweet
-</button>
-<button id="submit-tweet">
-    tweet
-</button>
+<div>
+</div>
+<ul class="panel">
+    <li>
+    <textarea name="tweet" cols="14" rows="11" id="message"></textarea>
+
+    </li>
+    <li>
+        <img src="./build/twitter.png" id="simple-tweet" style="width: 24px; height: 24px;">
+        <img src="./build/hatebu.png" id="hatebucrm" style="width: 24px; height: 24px;">
+        <img src="./build/hatebufox.png" id="hatebufox" style="width: 24px; height: 24px;">
+<br>
+    <img src="./build/clipboard.png" id="clipboard" style="width: 24px; height: 24px;">
+    <br>
+    <img src="./build/hatenablog.png" id="blogentry" style="width: 24px; height: 24px;">
+    <img src="./build/link.png" id="blogrefemb" style="width: 24px; height: 24px;">
+    <img src="./build/linkfill.png" id="blogrefsel" style="width: 24px; height: 24px;">
+    <br>
+    <img src="./build/leftarrow.png" id="toolleft" style="width: 24px; height: 24px;">
+    <img src="./build/rightarrow.png" id="toolright" style="width: 24px; height: 24px;">
+        <br>
+        <img src="./build/googlesearch.png" id="googlesearch" style="width: 24px; height: 24px;">
+    
+    </li>
+    </ul>
+    
+    <p class="clearLeft"></p>
+    
+    <button id="submit-import">
+        simple tweet
+    </button>
+    <button id="submit-toclip">
+        to Clipboard
+    </button>
+    <button id="submit-tweet">
+        tweet
+    </button>
+    <ul id="buttons">
+    </ul>
 consumer_key
 <input type="text" name="consumer_key" value="" id="config-consumer-key">
 consumer_secret
