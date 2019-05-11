@@ -50,6 +50,14 @@ document.getElementById('blogrefemb').addEventListener('click', (e) => {
 document.getElementById('blogrefsel').addEventListener('click', (e) => {
   ipcRenderer.send('blogrefsel');
 });
+// 作業用ウィンドウで開いている Amazon の商品をブログに挿入する。
+document.getElementById('blogamazon').addEventListener('click', (e) => {
+  ipcRenderer.send('blogamazon');
+});
+// 作業用ウィンドウで開いているGitHubのソースコードをブログに挿入する。
+document.getElementById('bloggithub').addEventListener('click', (e) => {
+  ipcRenderer.send('bloggithub');
+});
 // Google Chrome に表示されているページをはてブする 。
 document.getElementById('hatebucrm').addEventListener('click', (e) => {
   ipcRenderer.send('hatebucrm');
@@ -58,7 +66,11 @@ document.getElementById('hatebucrm').addEventListener('click', (e) => {
 document.getElementById('hatebufox').addEventListener('click', (e) => {
   ipcRenderer.send('hatebufox');
 });
-// スクリーンキーボードなどを右に配置する。
+// 主要ツールのウィンドウ位置とサイズを調整する。
+document.getElementById('adjust').addEventListener('click', (e) => {
+  ipcRenderer.send('adjust');
+});
+//
 document.getElementById('toolright').addEventListener('click', (e) => {
   ipcRenderer.send('toolright');
 });
@@ -66,7 +78,7 @@ document.getElementById('toolright').addEventListener('click', (e) => {
 document.getElementById('toolleft').addEventListener('click', (e) => {
   ipcRenderer.send('toolleft');
 });
-//
+//新規タブで Google 音声検索する。
 document.getElementById('googlesearch').addEventListener('click', (e) => {
   ipcRenderer.send('googlesearch');
 });
@@ -118,6 +130,7 @@ document.getElementById('submit-dictionary').addEventListener('click', (e) => {
   };
   ipcRenderer.send('submit-dic', form);
 });
+//^d
 $(document).keydown(function(e){
   if (event.ctrlKey) {
     if (e.keyCode === 68) {

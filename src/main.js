@@ -70,6 +70,14 @@ ipcMain.on('blogrefemb', (event) => {
 ipcMain.on('blogrefsel', (event) => {
   executeAhk('call_winsfteql.ahk');
 });
+// 作業用ウィンドウで開いている Amazon の商品をブログに挿入する。
+ipcMain.on('blogamazon', (event) => {
+  executeAhk('call_blogasin.ahk');
+});
+// 作業用ウィンドウで開いているGitHubのソースコードをブログに挿入する。
+ipcMain.on('bloggithub', (event) => {
+  executeAhk('call_winctrleql.ahk');
+});
 // Google Chrome に表示されているページをはてブする 。
 ipcMain.on('hatebucrm', (event) => {
   executeAhk('call_win2.ahk');
@@ -78,15 +86,19 @@ ipcMain.on('hatebucrm', (event) => {
 ipcMain.on('hatebufox', (event) => {
   executeAhk('call_winsft2.ahk');
 });
-// スクリーンキーボードなどを右に配置する。
-ipcMain.on('toolright', (event) => {
-  executeAhk('call_winhome.ahk');
+// 主要ツールのウィンドウ位置とサイズを調整する。
+ipcMain.on('adjust', (event) => {
+  executeAhk('call_winsfthome.ahk');
 });
 // スクリーンキーボードなどを左に配置する。
 ipcMain.on('toolleft', (event) => {
   executeAhk('call_winsfthome.ahk');
 });
 //
+ipcMain.on('toolleft', (event) => {
+  executeAhk('call_winsfthome.ahk');
+});
+//新規タブで Google 音声検索する。
 ipcMain.on('googlesearch', (event) => {
   executeAhk('call_winhome.ahk');
 });
