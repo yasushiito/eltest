@@ -95,8 +95,10 @@ ipcMain.on('toolleft', (event) => {
   executeAhk('call_winsfthome.ahk');
 });
 //
-ipcMain.on('toolleft', (event) => {
-  executeAhk('call_winsfthome.ahk');
+ipcMain.on('translate', (event) => {
+  //クリップボードの内容を変換してクリップボードに入れなおす時にはこちらを呼び出す。
+//クリップボタンがクリップボードの内容を変換して入れ直す時に使う。
+  translateMessage(clipboard.readText());
 });
 //新規タブで Google 音声検索する。
 ipcMain.on('googlesearch', (event) => {
@@ -119,15 +121,19 @@ ipcMain.on('tweet', (event, form) => {
     tweet.post(msgs[i]);
   }
 });
-// Textarea のテキストをクリップボードに転送する 。
-ipcMain.on('setclip', (event, form) => {
+var translateMessage=(message) => {
   var tweet = new Tweet(null);
   var words = config.get('dictionary').split("\n");
   var dic = words.map((value, index, array) => {return value.split("\t")});
   var dictionary = new Dictionary(dic);
-  let lines = form.message.split("\n");
+  let lines = message.split("\n");
   var msgs = tweet.clip(lines, dictionary);
   clipboard.writeText(msgs.join("\n"));
+
+}
+// Textarea のテキストをクリップボードに転送する 。
+ipcMain.on('setclip', (event, form) => {
+  translateMessage(form.message);
 });
 ipcMain.on('submit', (event, params) => {
   config.set('consumer_key', params.consumer_key);
@@ -146,7 +152,7 @@ app.on('ready', function() {
   mainWindow = new BrowserWindow({x: 110, y: 250, width: 360, height: 250, alwaysOnTop: true});
   mainWindow.loadFile('index.html');
   //mainWindow.toggleDevTools();
-  
+  mainWindow.setTitle('eltest')
   mainWindow.on('closed', function() {
     mainWindow = null;
   });

@@ -36,6 +36,7 @@ document.getElementById('simple-tweet').addEventListener('click', (e) => {
   ipcRenderer.send('import', 'update-message');
 });
 document.getElementById('clipboard').addEventListener('click', (e) => {
+  //Google Script 経由で音声入力テキストをテキストエリアに取り込む場合。
   ipcRenderer.send('import', 'toclip');
 });
 // はてなブログの新規エントリーを用意する。
@@ -74,9 +75,9 @@ document.getElementById('adjust').addEventListener('click', (e) => {
 document.getElementById('toolright').addEventListener('click', (e) => {
   ipcRenderer.send('toolright');
 });
-// スクリーンキーボードなどを左に配置する。
-document.getElementById('toolleft').addEventListener('click', (e) => {
-  ipcRenderer.send('toolleft');
+// 
+document.getElementById('translate').addEventListener('click', (e) => {
+  ipcRenderer.send('translate');
 });
 //新規タブで Google 音声検索する。
 document.getElementById('googlesearch').addEventListener('click', (e) => {
@@ -101,6 +102,7 @@ ipcRenderer.on('toclip', (event, message) => {
   };
   event.sender.send('setclip', form)
 });
+
 var btn = document.getElementById('submit-config');
 btn.addEventListener('click', (e) => {
   var consumer_key = $('#config-consumer-key');
@@ -129,6 +131,16 @@ document.getElementById('submit-dictionary').addEventListener('click', (e) => {
     dictionary: dic.val()
   };
   ipcRenderer.send('submit-dic', form);
+});
+//^c 音声入力テキストコピペで textarea に移すショートカット。
+//クリップボードにテキストが入っている前提で呼び出される。
+//テキストを取り出して toclip と同じ処理を行えば擬似的にクリップボードボタンをトレースできる。
+$(document).keydown(function(e){
+  if (event.ctrlKey) {
+    if (e.keyCode === 67) {
+      document.getElementById('translate').click();
+    }
+  }
 });
 //^d
 $(document).keydown(function(e){

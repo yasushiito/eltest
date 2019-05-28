@@ -1,0 +1,12 @@
+//
+ipcMain.on('', (event) => {
+  executeAhk('.ahk');
+});
+
+
+    <img src="./build/.png" id="" style="width: 24px; height: 24px;">
+
+// 
+document.getElementById('').addEventListener('click', (e) => {
+  ipcRenderer.send('');
+});
