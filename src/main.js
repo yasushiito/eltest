@@ -58,6 +58,14 @@ var executeAhk = (filename) => {
     console.log(stdout);
   });
 }
+//音声入力されたテキストを Facebook メッセンジャーに貼り付ける。
+ipcMain.on('portmessenger', (event) => {
+  executeAhk('call_portmessenger.ahk');
+});
+//クリップボードの内容を変換して入れ直す
+ipcMain.on('translate', (event) => {
+  translateMessage(clipboard.readText());
+});
 // はてなブログの新規エントリーを用意する。
 ipcMain.on('blogentry', (event) => {
   executeAhk('call_winins.ahk');
@@ -93,12 +101,6 @@ ipcMain.on('adjust', (event) => {
 // スクリーンキーボードなどを左に配置する。
 ipcMain.on('toolleft', (event) => {
   executeAhk('call_winsfthome.ahk');
-});
-//
-ipcMain.on('translate', (event) => {
-  //クリップボードの内容を変換してクリップボードに入れなおす時にはこちらを呼び出す。
-//クリップボタンがクリップボードの内容を変換して入れ直す時に使う。
-  translateMessage(clipboard.readText());
 });
 //新規タブで Google 音声検索する。
 ipcMain.on('googlesearch', (event) => {

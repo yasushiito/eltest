@@ -39,6 +39,14 @@ document.getElementById('clipboard').addEventListener('click', (e) => {
   //Google Script 経由で音声入力テキストをテキストエリアに取り込む場合。
   ipcRenderer.send('import', 'toclip');
 });
+// 音声入力されたテキストを Facebook メッセンジャーに貼り付ける。
+document.getElementById('portmessenger').addEventListener('click', (e) => {
+  ipcRenderer.send('portmessenger');
+});
+//クリップボードの内容を変換して入れ直す
+document.getElementById('translate').addEventListener('click', (e) => {
+  ipcRenderer.send('translate');
+});
 // はてなブログの新規エントリーを用意する。
 document.getElementById('blogentry').addEventListener('click', (e) => {
   ipcRenderer.send('blogentry');
@@ -74,10 +82,6 @@ document.getElementById('adjust').addEventListener('click', (e) => {
 //
 document.getElementById('toolright').addEventListener('click', (e) => {
   ipcRenderer.send('toolright');
-});
-// 
-document.getElementById('translate').addEventListener('click', (e) => {
-  ipcRenderer.send('translate');
 });
 //新規タブで Google 音声検索する。
 document.getElementById('googlesearch').addEventListener('click', (e) => {
