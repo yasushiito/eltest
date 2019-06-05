@@ -79,6 +79,10 @@ document.getElementById('hatebufox').addEventListener('click', (e) => {
 document.getElementById('adjust').addEventListener('click', (e) => {
   ipcRenderer.send('adjust');
 });
+// ステップ記録ツールのスクリーンショットを開く。
+document.getElementById('extractpsr').addEventListener('click', (e) => {
+  ipcRenderer.send('extractpsr');
+});
 //
 document.getElementById('toolright').addEventListener('click', (e) => {
   ipcRenderer.send('toolright');

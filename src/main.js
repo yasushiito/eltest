@@ -7,6 +7,7 @@ const BrowserWindow = electron.BrowserWindow;
 const ipcMain = require('electron').ipcMain;
 const {clipboard} = require('electron');
 const { exec } = require('child_process');
+const { spawn } = require('child_process');
 import {ipcRenderer} from 'electron';
 import Tweet from './main/tweet';
 import Dictionary from './main/dictionary';
@@ -98,9 +99,14 @@ ipcMain.on('hatebufox', (event) => {
 ipcMain.on('adjust', (event) => {
   executeAhk('call_winsfthome.ahk');
 });
-// スクリーンキーボードなどを左に配置する。
-ipcMain.on('toolleft', (event) => {
-  executeAhk('call_winsfthome.ahk');
+//ステップ記録ツールのスクリーンショットを開く。
+ipcMain.on('extractpsr', (event) => {
+  let fn = '"' + path.resolve(dir_home, 'Documents') + '/stoppsr.ahk.lnk' + '"';
+  spawn(fn, [], { shell: true })
+});
+// 
+ipcMain.on('toolright', (event) => {
+  //executeAhk('call_winsfthome.ahk');
 });
 //新規タブで Google 音声検索する。
 ipcMain.on('googlesearch', (event) => {
