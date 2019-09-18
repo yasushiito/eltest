@@ -106,7 +106,7 @@ ipcMain.on('extractpsr', (event) => {
 });
 // 
 ipcMain.on('toolright', (event) => {
-  //executeAhk('call_winsfthome.ahk');
+  executeAhk('startmyahk.ahk');
 });
 //新規タブで Google 音声検索する。
 ipcMain.on('googlesearch', (event) => {
