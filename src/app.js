@@ -87,6 +87,14 @@ document.getElementById('extractpsr').addEventListener('click', (e) => {
 document.getElementById('toolright').addEventListener('click', (e) => {
   ipcRenderer.send('toolright');
 });
+// Bluetooth 機器が接続されていることを確認する。
+document.getElementById('btconn').addEventListener('click', (e) => {
+  ipcRenderer.send('btconn');
+});
+//Radiko でなんちゃらする。
+document.getElementById('radiko').addEventListener('click', (e) => {
+  ipcRenderer.send('radiko');
+});
 //新規タブで Google 音声検索する。
 document.getElementById('googlesearch').addEventListener('click', (e) => {
   ipcRenderer.send('googlesearch');

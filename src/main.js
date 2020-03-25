@@ -108,6 +108,14 @@ ipcMain.on('extractpsr', (event) => {
 ipcMain.on('toolright', (event) => {
   executeAhk('startmyahk.ahk');
 });
+//
+ipcMain.on('btconn', (event) => {
+  executeAhk('call_BTStandby.ahk');
+});
+//
+ipcMain.on('radiko', (event) => {
+//  executeAhk('call_.ahk');
+});
 //新規タブで Google 音声検索する。
 ipcMain.on('googlesearch', (event) => {
   executeAhk('call_winhome.ahk');
@@ -161,6 +169,7 @@ app.on('ready', function() {
   mainWindow.loadFile('index.html');
   //mainWindow.toggleDevTools();
   mainWindow.setTitle('eltest')
+  mainWindow.setMenu(null);
   mainWindow.on('closed', function() {
     mainWindow = null;
   });
