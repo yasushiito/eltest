@@ -165,7 +165,14 @@ ipcMain.on('submit-dic', (event, params) => {
 });
 app.on('ready', function() {
   // ブラウザ(Chromium)の起動, 初期画面のロード
-  mainWindow = new BrowserWindow({x: 110, y: 250, width: 360, height: 250, alwaysOnTop: true});
+  mainWindow = new BrowserWindow(
+    {
+      x: 110, y: 250, width: 360, height: 250, alwaysOnTop: true,
+        webPreferences: {
+          nodeIntegration: true
+        }
+    }
+    );
   mainWindow.loadFile('index.html');
   //mainWindow.toggleDevTools();
   mainWindow.setTitle('eltest')
