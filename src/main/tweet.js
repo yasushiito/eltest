@@ -29,5 +29,10 @@ export default class Tweet {
   clip(messages, dictionary) {
     return Messages.replaceByDictionary(Messages.replaceTag(Messages.addPeriod(Messages.trimedMessages(messages))), dictionary);
   }
+
+  //1行ごとに分割されたメッセージを140文字単位にまとめて返す。
+  join(messages) {
+    return Messages.joinMessages(messages, true);
+  }
 }
 

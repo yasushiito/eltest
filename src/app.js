@@ -33,17 +33,23 @@ document.getElementById('submit-toclip').addEventListener('click', (e) => {
 });
 //
 document.getElementById('simple-tweet').addEventListener('click', (e) => {
-  ipcRenderer.send('import', 'update-message');
+//Textarea の内容をtweetする。
+let msg = $('#message');
+var message = msg.val();
+ipcRenderer.send('tweet', message);
+//動作した合図としてテキストエリアをクリアしておく。
+msg.val("")
 });
 document.getElementById('clipboard').addEventListener('click', (e) => {
-  //Google Script 経由で音声入力テキストをテキストエリアに取り込む場合。
-  ipcRenderer.send('import', 'toclip');
+//音声入力テキストをクリップボードにコピーするahkスクリプトを起動して。
+//Ctrl + C のショートカット送信してもらってテキストエリアに取り込む。
+  ipcRenderer.send('editortoeltest');
 });
 // 音声入力されたテキストを Facebook メッセンジャーに貼り付ける。
 document.getElementById('portmessenger').addEventListener('click', (e) => {
   ipcRenderer.send('portmessenger');
 });
-//クリップボードの内容を変換して入れ直す
+//クリップボードの内容を変換してTextarea に入れ直す。
 document.getElementById('translate').addEventListener('click', (e) => {
   ipcRenderer.send('translate');
 });
@@ -99,14 +105,13 @@ document.getElementById('radiko').addEventListener('click', (e) => {
 document.getElementById('googlesearch').addEventListener('click', (e) => {
   ipcRenderer.send('googlesearch');
 });
-// 音声入力ドキュメントに書かれたテキストをインポートできたらメッセージ送信される 
+//Translate したテキストを textarea に貼り付ける。
+//メインプロセスからは操作できないのでパラメーターを送ってもらう。
 ipcRenderer.on('update-message', (event, message) => {
   let msg = $('#message');
   msg.val(message);
-  var form = {
-    message: message
-  };
-  event.sender.send('tweet', form)
+  //クリップボードに入っていた内容を確かめずにtweetするのは怖い
+  //event.sender.send('tweet', form)
 });
 // 音声入力文書からのインポートが終了したら呼び出される 。
 ipcRenderer.on('toclip', (event, message) => {
@@ -159,6 +164,8 @@ $(document).keydown(function(e){
   }
 });
 //^d
+//何らかの形、多分 ahk スクリプトでクリップボードにメッセージを入れたら Ctrl + D でクリップボードボタン押したことにしてメッセージをtweetする。
+//人間がボタンを押す二段階方式に変えたので使っていない。
 $(document).keydown(function(e){
   if (event.ctrlKey) {
     if (e.keyCode === 68) {

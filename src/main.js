@@ -59,13 +59,40 @@ var executeAhk = (filename) => {
     console.log(stdout);
   });
 }
+//音声入力エディタのテキストをキーボードショートカットでインポートするボタン。
+ipcMain.on('editortoeltest', (event) => {
+  executeAhk('call_editortoeltest.ahk');
+});
 //音声入力されたテキストを Facebook メッセンジャーに貼り付ける。
 ipcMain.on('portmessenger', (event) => {
   executeAhk('call_portmessenger.ahk');
 });
 //クリップボードの内容を変換して入れ直す
+//通常は Ctrl + C のショートカットから呼び出される。
+//Translate ボタンのクリックでも呼び出せる。
 ipcMain.on('translate', (event) => {
-  translateMessage(clipboard.readText());
+  //テキスト変換処理は Twitter クラスに任せちゃっているので 認証手続きなんてしないけど設定しておく。
+  var auth = {
+    consumer_key: config.get('consumer_key'),
+    consumer_secret: config.get('consumer_secret'),
+    access_token_key: config.get('access_token_key'),
+    access_token_secret: config.get('access_token_secret')
+  };
+  var tweet = new Tweet(auth);
+  var words = config.get('dictionary').split("\n");
+  var dic = words.map((value, index, array) => {return value.split("\t")});
+  var dictionary = new Dictionary(dic);
+  //テキストデータの入力ソースはクリップボードだからね。
+  let message = clipboard.readText();
+  let lines = message.split("\n");
+  var msgs = tweet.clip(lines, dictionary);
+  //変換したテキストは結合してテキストエリアに戻す。
+  message = msgs.join("\n")
+  console.log(message.length);
+  if (message.length < 1)
+    return;
+  clipboard.writeText(message);
+  event.sender.send('update-message', message);
 });
 // はてなブログの新規エントリーを用意する。
 ipcMain.on('blogentry', (event) => {
@@ -120,7 +147,10 @@ ipcMain.on('radiko', (event) => {
 ipcMain.on('googlesearch', (event) => {
   executeAhk('call_winhome.ahk');
 });
-ipcMain.on('tweet', (event, form) => {
+
+//tweetする。
+//受け取るテキストメッセージは多分 textarea のテキスト。
+ipcMain.on('tweet', (event, message) => {
   var auth = {
     consumer_key: config.get('consumer_key'),
     consumer_secret: config.get('consumer_secret'),
@@ -128,24 +158,13 @@ ipcMain.on('tweet', (event, form) => {
     access_token_secret: config.get('access_token_secret')
   };
   var tweet = new Tweet(auth);
-  var words = config.get('dictionary').split("\n");
-  var dic = words.map((value, index, array) => {return value.split("\t")});
-  var dictionary = new Dictionary(dic);
-  let lines = form.message.split("\n");
-  var msgs = tweet.simple(lines, dictionary);
+  let lines = message.split("\n");
+  var msgs = tweet.join(lines); //140文字ごとにまとめてもらう。
   for(let i = 0;i < msgs.length;i++){
     tweet.post(msgs[i]);
   }
 });
 var translateMessage=(message) => {
-  var tweet = new Tweet(null);
-  var words = config.get('dictionary').split("\n");
-  var dic = words.map((value, index, array) => {return value.split("\t")});
-  var dictionary = new Dictionary(dic);
-  let lines = message.split("\n");
-  var msgs = tweet.clip(lines, dictionary);
-  clipboard.writeText(msgs.join("\n"));
-
 }
 // Textarea のテキストをクリップボードに転送する 。
 ipcMain.on('setclip', (event, form) => {
