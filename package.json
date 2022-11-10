@@ -17,7 +17,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.26.0",
     "chai": "^4.2.0",
-    "electron": "^9.1.1",
+    "electron": "^18.3.7",
     "fs": "0.0.1-security",
     "jquery": "^3.5.1",
     "mocha": "^8.0.1",
